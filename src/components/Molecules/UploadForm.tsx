@@ -5,9 +5,24 @@ import { useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import firebase, { storage, db } from "../../utils/Firebase";
 
-export const UploadForm = () => {
+type Props = {
+  setIsError: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+type sourceType = {
+  source: string;
+};
+
+type fetchedFileMetaDatasType = {
+  name: string;
+  size: number;
+  contentType: string | null | undefined;
+  created: string;
+};
+
+export const UploadForm: React.FC<Props> = (props) => {
+  const { setIsError } = props;
   const [file, setFile] = useState<any>(null);
-  const [imageUrl, setImageUrl] = useState<string>("");
   const types = ["image/png", "image/jpeg", "image/jpg"];
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,7 +38,7 @@ export const UploadForm = () => {
   const upLoadImage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (file === null) {
-      alert("ファイルが選択されていません");
+      setIsError(true);
       return;
     }
 
@@ -52,13 +67,33 @@ export const UploadForm = () => {
   const complete = () => {
     // 完了後の処理
     // 画像表示のため、アップロードした画像のURLを取得
+    let fetchedSource: sourceType;
+    let fetchedFileMetaDatas: fetchedFileMetaDatasType;
+
+    // 一つのオブジェクトを生成するための過程
+    // 画像のパスを取得
     storage
       .ref("images")
       .child(file.name)
-      .getDownloadURL()
+      .getDownloadURL() // 画像のパスを取得
       .then((fireBaseUrl) => {
+        fetchedSource = { source: fireBaseUrl };
+      });
+
+    storage
+      .ref("images")
+      .child(file.name)
+      .getMetadata() // メタデータを取得
+      .then((file) => {
+        fetchedFileMetaDatas = {
+          name: file.name,
+          size: file.size,
+          contentType: file.contentType,
+          created: file.timeCreated,
+        };
         db.collection("images").add({
-          source: fireBaseUrl,
+          ...fetchedSource,
+          ...fetchedFileMetaDatas,
         });
       });
   };

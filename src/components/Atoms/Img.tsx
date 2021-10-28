@@ -1,24 +1,11 @@
 import { Image } from "@chakra-ui/react";
 
 interface Props {
-  info: {
-    id: number;
-    name: string;
-    description: string;
-    imgPath: string;
-    imgAlt: string;
-  };
+  source: string;
   onOpen: VoidFunction;
 }
 
 export const Img: React.FC<Props> = (props) => {
-  const { info, onOpen } = props;
-  return (
-    <Image
-      src={info.imgPath}
-      alt={info.imgAlt}
-      cursor="pointer"
-      onClick={onOpen}
-    />
-  );
+  const { source, onOpen } = props;
+  return <Image src={source} alt="" cursor="pointer" onClick={onOpen} />;
 };

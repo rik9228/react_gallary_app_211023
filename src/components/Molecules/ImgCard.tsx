@@ -1,35 +1,30 @@
 import { ImgModal } from "./ImgModal";
-import { Img } from "../Atoms/Img";
 
-import { useDisclosure } from "@chakra-ui/react";
+import { Img } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
 import { Stack } from "@chakra-ui/layout";
+import { imgInfosType } from "../hooks/useFetchImage";
 
-interface Props {
-  info: {
-    id: number;
-    name: string;
-    description: string;
-    imgPath: string;
-    imgAlt: string;
-  };
-}
+type Props = {
+  imgInfo: imgInfosType;
+  isOpen: boolean;
+  onOpen: VoidFunction;
+  onClose: VoidFunction;
+};
 
 export const ImgCard: React.FC<Props> = (props) => {
-  const { info } = props;
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { imgInfo, isOpen, onOpen, onClose } = props;
   return (
     <>
       <Stack
         p="4"
-        w="32%"
         spacing="24px"
         border="1px"
         borderRadius="xl"
         borderColor="gray.200"
         transition="0.4s"
       >
-        <Img info={info} onOpen={onOpen} />
+        <Img src={imgInfo.source} alt="" cursor="pointer" onClick={onOpen} />
         <Button
           bgColor="teal"
           color="white"
@@ -40,9 +35,21 @@ export const ImgCard: React.FC<Props> = (props) => {
         >
           Delete
         </Button>
+        <ImgModal
+          isOpen={isOpen}
+          onClose={onClose}
+          source={imgInfo.source}
+          createdAt={imgInfo.created}
+          fileName={imgInfo.name}
+          fileSize={imgInfo.size}
+        ></ImgModal>
       </Stack>
-
-      <ImgModal isOpen={isOpen} onClose={onClose} name={info.name} description={info.description}></ImgModal>
     </>
   );
 };
+
+// contentType: string;
+//   created: number;
+//   name: string;
+//   size: number;
+//   source: string;

@@ -2,39 +2,41 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
   ModalFooter,
   ModalBody,
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
-import { Text } from "@chakra-ui/react";
+import { Img, Text, Stack } from "@chakra-ui/react";
+import { fileSizeUnit } from "../../utils/changeUnit";
 
-interface Props {
+type Props = {
+  source: string;
+  createdAt: number;
+  fileName: string;
+  fileSize: number;
   isOpen: boolean;
   onClose: VoidFunction;
-  name: string;
-  description: string;
-}
+};
 
 export const ImgModal: React.FC<Props> = (props) => {
-  const { isOpen, onClose, name, description } = props;
+  const { isOpen, onClose, source, createdAt, fileName, fileSize } = props;
   return (
     <div>
       <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent p="6">
-          {/* <ModalHeader>Modal Title</ModalHeader> */}
-          <Text as="h3" fontSize={20} textAlign="center">
-            {name}
-          </Text>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>{description}</Text>
+        <ModalOverlay backgroundColor="#1a1a1a40" />
+        <ModalContent>
+          <ModalCloseButton color="#fff" />
+          <ModalBody p={3}>
+            <Stack spacing={3}>
+              <Img src={source} />
+              <Text>画像名：{fileName}</Text>
+              <Text>作成日時：{createdAt}</Text>
+              <Text>サイズ：{fileSizeUnit(fileSize)}</Text>
+            </Stack>
           </ModalBody>
-
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button colorScheme="blue" onClick={onClose} width="100%" pt={0}>
               Close
             </Button>
           </ModalFooter>

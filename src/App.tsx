@@ -1,29 +1,45 @@
 import "./App.css";
 import { ImgCard } from "./components/Molecules/ImgCard";
-import { Text, Box, Flex } from "@chakra-ui/react";
-import { ImgInfos } from "./utils/ImgInfos";
+import { Text, Box, Grid } from "@chakra-ui/react";
 import { UploadForm } from "./components/Molecules/UploadForm";
+import { useFetchImage } from "./components/hooks/useFetchImage";
+import { useDisclosure } from "@chakra-ui/react";
+import { ErrorLabel } from "./components/Molecules/ErrorLabel";
+import { useState } from "react";
 
 function App() {
+  const { imgInfos } = useFetchImage();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isError, setIsError] = useState(false);
+
   return (
     <div className="App">
       <Box p="5">
         <Text fontSize="5xl" as="h1">
           My Image Gallary
         </Text>
-        <UploadForm />
+        {isError && <ErrorLabel setIsError={setIsError} />}
+        <Box mt={5}>
+          <UploadForm setIsError={setIsError} />
+        </Box>
 
-        <Flex
+        <Grid
           maxW="1200px"
           mx="auto"
           mt={8}
-          flexWrap="wrap"
-          justifyContent="space-between"
+          templateColumns="repeat(3, 1fr)"
+          gap={8}
         >
-          {ImgInfos.map((info, index) => (
-            <ImgCard info={info} key={index} />
+          {imgInfos.map((imgInfo, index) => (
+            <ImgCard
+              imgInfo={imgInfo}
+              key={index}
+              isOpen={isOpen}
+              onOpen={onOpen}
+              onClose={onClose}
+            />
           ))}
-        </Flex>
+        </Grid>
       </Box>
     </div>
   );
