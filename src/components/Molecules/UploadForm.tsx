@@ -1,5 +1,5 @@
-import { Button } from "@chakra-ui/button";
 import Icon from "@chakra-ui/icon";
+import { Button } from "@chakra-ui/button";
 import { Flex } from "@chakra-ui/layout";
 import { useState } from "react";
 import { FiUpload } from "react-icons/fi";
@@ -18,6 +18,7 @@ type fetchedFileMetaDatasType = {
   size: number;
   contentType: string | null | undefined;
   created: string;
+  id: string;
 };
 
 export const UploadForm: React.FC<Props> = (props) => {
@@ -90,6 +91,7 @@ export const UploadForm: React.FC<Props> = (props) => {
           size: file.size,
           contentType: file.contentType,
           created: file.timeCreated,
+          id: new Date().getTime().toString(), // 一意のIDを生成
         };
         db.collection("images").add({
           ...fetchedSource,

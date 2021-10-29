@@ -26,7 +26,7 @@ export const ImgModal: React.FC<Props> = (props) => {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay backgroundColor="#1a1a1a40" />
         <ModalContent>
-          <ModalCloseButton color="#fff" />
+          <ModalCloseButton />
           <ModalBody p={3}>
             <Stack spacing={3}>
               <Img src={source} />

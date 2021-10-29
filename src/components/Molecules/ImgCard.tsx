@@ -1,19 +1,29 @@
-import { ImgModal } from "./ImgModal";
+import { ImgModal } from "../Organisims/ImgModal";
 
 import { Img } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
 import { Stack } from "@chakra-ui/layout";
 import { imgInfosType } from "../hooks/useFetchImage";
+import { db } from "../../utils/Firebase";
+import { useDisclosure } from "@chakra-ui/react";
 
 type Props = {
   imgInfo: imgInfosType;
-  isOpen: boolean;
-  onOpen: VoidFunction;
-  onClose: VoidFunction;
 };
 
 export const ImgCard: React.FC<Props> = (props) => {
-  const { imgInfo, isOpen, onOpen, onClose } = props;
+  const { imgInfo } = props;
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const deleteImage = () => {
+  //   db.collection("images").remove({
+  //     ...fetchedSource,
+  //     ...fetchedFileMetaDatas,
+  //   });
+  // };
+
+  const deleteUploadedFile = (e: any) => {
+    console.log(e.target.parentElement.dataset.id);
+  };
   return (
     <>
       <Stack
@@ -23,9 +33,11 @@ export const ImgCard: React.FC<Props> = (props) => {
         borderRadius="xl"
         borderColor="gray.200"
         transition="0.4s"
+        data-id={imgInfo.id}
       >
         <Img src={imgInfo.source} alt="" cursor="pointer" onClick={onOpen} />
         <Button
+          onClick={deleteUploadedFile}
           bgColor="teal"
           color="white"
           _hover={{
@@ -47,9 +59,3 @@ export const ImgCard: React.FC<Props> = (props) => {
     </>
   );
 };
-
-// contentType: string;
-//   created: number;
-//   name: string;
-//   size: number;
-//   source: string;

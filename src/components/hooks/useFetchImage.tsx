@@ -7,6 +7,7 @@ export type imgInfosType = {
   name: string;
   size: number;
   source: string;
+  id: string;
 };
 
 export const useFetchImage = () => {
