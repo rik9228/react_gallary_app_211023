@@ -8,16 +8,16 @@ import { useState } from "react";
 import { Header } from "./components/Organisims/Header";
 
 function App() {
-  const { imgInfos } = useFetchImage();
-  const [isError, setIsError] = useState(false);
-
+  const { imgInfos, setImgInfos, isComplete } = useFetchImage();
+  const [isError, setIsError] = useState<boolean>(false);
+  
   return (
     <div className="App">
       <Header />
       <Box p="5">
         {isError && <ErrorLabel setIsError={setIsError} />}
         <Box mt={5}>
-          <UploadForm setIsError={setIsError} />
+          <UploadForm setImgInfos={setImgInfos} setIsError={setIsError} />
         </Box>
 
         <Grid
@@ -27,9 +27,21 @@ function App() {
           templateColumns="repeat(3, 1fr)"
           gap={8}
         >
-          {imgInfos.map((imgInfo, index) => (
-            <ImgCard imgInfo={imgInfo} key={index} />
-          ))}
+          {isComplete ? (
+            <>
+              {imgInfos.map((imgInfo, index) => (
+                <ImgCard
+                  setImgInfos={setImgInfos}
+                  imgInfo={imgInfo}
+                  key={index}
+                />
+              ))}
+            </>
+          ) : (
+            <Text display="block" textAlign="center">
+              ...Loading
+            </Text>
+          )}
         </Grid>
       </Box>
     </div>

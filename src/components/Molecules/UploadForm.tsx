@@ -4,9 +4,11 @@ import { Flex } from "@chakra-ui/layout";
 import { useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import firebase, { storage, db } from "../../utils/Firebase";
+import { imgInfosType } from "../hooks/useFetchImage";
 
 type Props = {
   setIsError: React.Dispatch<React.SetStateAction<boolean>>;
+  setImgInfos: React.Dispatch<React.SetStateAction<imgInfosType[]>>;
 };
 
 type sourceType = {
@@ -22,7 +24,7 @@ type fetchedFileMetaDatasType = {
 };
 
 export const UploadForm: React.FC<Props> = (props) => {
-  const { setIsError } = props;
+  const { setIsError, setImgInfos } = props;
   const [file, setFile] = useState<any>(null);
   const types = ["image/png", "image/jpeg", "image/jpg"];
 
@@ -33,6 +35,21 @@ export const UploadForm: React.FC<Props> = (props) => {
       if (selected && types.includes(selected.type)) {
         setFile(selected);
       }
+    }
+  };
+
+  const UploadSetImg = () => {
+    if (confirm("この写真をアップロードしますか？")) {
+      db.collection("images")
+        .get()
+        .then((query) => {
+          let uplodedImages: any = [];
+          query.forEach((doc) => {
+            let data = doc.data();
+            uplodedImages.push(data);
+          });
+          setImgInfos(uplodedImages);
+        });
     }
   };
 
@@ -64,7 +81,7 @@ export const UploadForm: React.FC<Props> = (props) => {
     // エラーハンドリング
     console.log(error);
   };
-
+  
   const complete = () => {
     // 完了後の処理
     // 画像表示のため、アップロードした画像のURLを取得
@@ -93,10 +110,15 @@ export const UploadForm: React.FC<Props> = (props) => {
           created: file.timeCreated,
           id: new Date().getTime().toString(), // 一意のIDを生成
         };
+        console.log(file);
         db.collection("images").add({
           ...fetchedSource,
           ...fetchedFileMetaDatas,
         });
+
+        setTimeout(() => {
+          UploadSetImg();
+        }, 10);
       });
   };
 
